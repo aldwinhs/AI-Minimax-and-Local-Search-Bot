@@ -6,7 +6,6 @@ import numpy as np
 
 class LocalSearchBot(Bot):
     def get_action(self, state: GameState) -> GameAction:
-        print("LocalSearchBot is thinking...")
         # Return the best action for the current state with local search algorithm.
         # You can use the following functions:
         #   - self.get_successors(state)
@@ -17,7 +16,6 @@ class LocalSearchBot(Bot):
         return self.local_search(state)
 
     def local_search(self, state: GameState):
-        print("Local_search is thinking...")
         best_action = None
         best_value = -np.inf
 
@@ -34,21 +32,24 @@ class LocalSearchBot(Bot):
                 best_action = action
 
         # Because player need to take turn so we need to choose the best action not current state
-
-        return best_action
+        
+        # Reverse X and Y
+        return GameAction(best_action.action_type, (best_action.position[1], best_action.position[0]))
 
     def get_successors(self, state: GameState) -> list[GameAction]:
         # Return a list of all successor states of the given state.
-        print("get_successors is thinking...")
         successors = []
         
-        for i in range(len(state.row_status)):
-            for j in range(len(state.row_status[0])):
+        [y,x] = state.row_status.shape
+
+        for i in range(y):
+            for j in range(x):
                 if state.row_status[i][j] == 0:
                     successors.append(GameAction("row", (i, j)))
 
-        for i in range(len(state.col_status)):
-            for j in range(len(state.col_status[0])):
+        [y,x] = state.col_status.shape
+        for i in range(y):
+            for j in range(x):
                 if state.col_status[i][j] == 0:
                     successors.append(GameAction("col", (i, j)))
 
@@ -56,7 +57,7 @@ class LocalSearchBot(Bot):
 
     def get_successor_state(self, state: GameState, action: GameAction) -> GameState:
         # Return the successor state of the given state after taking the given action.
-        print("get_successor_state is thinking...")
+
         x = action.position[1]
         y = action.position[0]
 
