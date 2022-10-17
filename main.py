@@ -8,10 +8,11 @@ import numpy as np
 from typing import Optional
 from Bot import Bot
 from GameState import GameState
-from LocalSearchBot import LocalSearchBot
 
 # * Import your bot
 from RandomBot import RandomBot
+from MinimaxBot import MinimaxBot
+from LocalSearchBot import LocalSearchBot
 
 size_of_board = 600
 number_of_dots = 4
@@ -315,5 +316,5 @@ if __name__ == "__main__":
     PvB mode: game_instance = Dots_and_Boxes(None, BotName()) or game_instance = Dots_and_Boxes(BotName(), None)
     BvB mode: game_instance = Dots_and_Boxes(BotName(), BotName())
     """
-    game_instance = Dots_and_Boxes(LocalSearchBot(), RandomBot())
+    game_instance = Dots_and_Boxes(None, MinimaxBot())
     game_instance.mainloop()
