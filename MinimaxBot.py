@@ -36,7 +36,7 @@ class MinimaxBot(Bot):
         # Return a list of all successor states of the given state.
 
         successors = []
-        all_row_marked = np.all(state.row_status == 1)
-        all_col_marked = np.all(state.col_status == 1)
+        
+        
 
         

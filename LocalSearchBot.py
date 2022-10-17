@@ -25,3 +25,37 @@ class LocalSearchBot(Bot):
                 best_action = action
 
         return best_action
+
+    def get_successors(self, state: GameState) -> list[GameState]:
+        # Return a list of all successor states of the given state.
+
+        successors = []
+        
+        for i in range(len(state.row_status)):
+            for j in range(len(state.row_status[0])):
+                if state.row_status[i][j] == 0:
+                    successors.append(GameAction("row", (i, j)))
+
+        for i in range(len(state.col_status)):
+            for j in range(len(state.col_status[0])):
+                if state.col_status[i][j] == 0:
+                    successors.append(GameAction("col", (i, j)))
+
+        return successors
+
+    def evaluate(self, state: GameState) -> int:
+        # Return the evaluation value of the given state.
+        # The evaluation value is the number of boxes filled by the current player.
+
+
+
+        return np.sum(state.board == self.get_player_id(state))
+
+    def get_player_id(self, state: GameState) -> int:
+        # Return the player id of the given state.
+        # The player id is 1 or 2.
+
+        if(state.player1_turn):
+            return -4
+        else:
+            return 4
