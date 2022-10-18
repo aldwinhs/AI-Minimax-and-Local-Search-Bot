@@ -30,7 +30,6 @@ class MinimaxBot(Bot):
         return GameAction(BestAction.action_type, (BestAction.position[1], BestAction.position[0]))
 
     def minimax(self, state: GameState, depth: int, alpha, beta, maximizingPlayer: bool, botTurn: bool):
-        self.visited += 1
         if depth == 0 or self.is_terminal(state) or (time.time()-self.execTimeStart > 5):
             return self.evaluate(state, botTurn)
         
