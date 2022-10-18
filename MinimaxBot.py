@@ -7,25 +7,25 @@ class MinimaxBot(Bot):
     def get_action(self, state: GameState) -> GameAction:
         depth = len(np.argwhere(state.row_status == 0)) + len(np.argwhere(state.col_status == 0))
         if(depth > 5):
-            depth = 2
+            depth = 4
 
-        if(depth == 0):
-            Action = self.get_succ(state)[0]
+        if(depth == 1):
+            BestAction = self.get_successors(state)[0]
         else:
-            Action = None
+            BestAction = None
             maxValue = -np.inf
             for action in self.get_successors(state):
                 value = self.minimax(self.get_successor_state(GameState(
                     state.board_status.copy(),
                     state.row_status.copy(),
                     state.col_status.copy(),
-                    state.player1_turn), action), depth, -np.inf, np.inf, False, state.player1_turn)
+                    state.player1_turn), action), depth-1, -np.inf, np.inf, False, state.player1_turn)
                 if value > maxValue:
                     maxValue = value
-                    Action = action
+                    BestAction = action
 
-        print(Action)
-        return GameAction(Action.action_type, (Action.position[1], Action.position[0]))
+        print(BestAction)
+        return GameAction(BestAction.action_type, (BestAction.position[1], BestAction.position[0]))
 
     def minimax(self, state: GameState, depth: int, alpha: bool, beta: bool, maximizingPlayer: bool, botTurn: bool):
         if depth == 0 or self.is_terminal(state):
@@ -38,8 +38,8 @@ class MinimaxBot(Bot):
                 maxValue = max(maxValue, value)
                 alpha = max(alpha, maxValue)      
                 if (beta <= alpha):
+                    print("pruning")
                     break
-                print("max", maxValue)
             return maxValue
         else:
             minValue = np.inf
@@ -48,6 +48,7 @@ class MinimaxBot(Bot):
                 minValue = min(minValue, value)
                 beta = min(beta, value)  
                 if (beta <= alpha):
+                    print("pruning")
                     break
             return minValue
 
