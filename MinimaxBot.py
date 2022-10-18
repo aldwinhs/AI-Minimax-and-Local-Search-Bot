@@ -2,12 +2,14 @@ from Bot import Bot
 from GameAction import GameAction
 from GameState import GameState
 import numpy as np
+import time
 
 class MinimaxBot(Bot):
+    execTimeStart = 0
+
     def get_action(self, state: GameState) -> GameAction:
         depth = len(np.argwhere(state.row_status == 0)) + len(np.argwhere(state.col_status == 0))
-        if(depth > 5):
-            depth = 4
+        self.execTimeStart = time.time()
 
         if(depth == 1):
             BestAction = self.get_successors(state)[0]
@@ -23,12 +25,13 @@ class MinimaxBot(Bot):
                 if value > maxValue:
                     maxValue = value
                     BestAction = action
-
-        print(BestAction)
+        
+        print("Thinking time: ", time.time()-self.execTimeStart)
         return GameAction(BestAction.action_type, (BestAction.position[1], BestAction.position[0]))
 
     def minimax(self, state: GameState, depth: int, alpha, beta, maximizingPlayer: bool, botTurn: bool):
-        if depth == 0 or self.is_terminal(state):
+        self.visited += 1
+        if depth == 0 or self.is_terminal(state) or (time.time()-self.execTimeStart > 5):
             return self.evaluate(state, botTurn)
         
         if maximizingPlayer:
@@ -38,7 +41,6 @@ class MinimaxBot(Bot):
                 maxValue = max(maxValue, value)
                 alpha = max(alpha, maxValue)      
                 if (beta <= alpha):
-                    print("pruning")
                     break
             return maxValue
         else:
@@ -48,7 +50,6 @@ class MinimaxBot(Bot):
                 minValue = min(minValue, value)
                 beta = min(beta, value)  
                 if (beta <= alpha):
-                    print("pruning")
                     break
             return minValue
 
