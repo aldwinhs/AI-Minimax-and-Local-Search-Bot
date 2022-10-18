@@ -27,7 +27,7 @@ class MinimaxBot(Bot):
         print(BestAction)
         return GameAction(BestAction.action_type, (BestAction.position[1], BestAction.position[0]))
 
-    def minimax(self, state: GameState, depth: int, alpha: bool, beta: bool, maximizingPlayer: bool, botTurn: bool):
+    def minimax(self, state: GameState, depth: int, alpha, beta, maximizingPlayer: bool, botTurn: bool):
         if depth == 0 or self.is_terminal(state):
             return self.evaluate(state, botTurn)
         
