@@ -6,16 +6,35 @@ import numpy as np
 class MinimaxBot(Bot):
     def get_action(self, state: GameState) -> GameAction:
         depth = len(np.argwhere(state.row_status == 0)) + len(np.argwhere(state.col_status == 0))
-        return self.minimax(state, depth, -np.inf, np.inf, True)
+        if(depth > 5):
+            depth = 2
 
-    def minimax(self, state: GameState, depth: int, alpha: bool, beta: bool, maximizingPlayer: bool):
+        if(depth == 0):
+            Action = self.get_succ(state)[0]
+        else:
+            Action = None
+            maxValue = -np.inf
+            for action in self.get_successors(state):
+                value = self.minimax(self.get_successor_state(GameState(
+                    state.board_status.copy(),
+                    state.row_status.copy(),
+                    state.col_status.copy(),
+                    state.player1_turn), action), depth, -np.inf, np.inf, False, state.player1_turn)
+                if value > maxValue:
+                    maxValue = value
+                    Action = action
+
+        print(Action)
+        return GameAction(Action.action_type, (Action.position[1], Action.position[0]))
+
+    def minimax(self, state: GameState, depth: int, alpha: bool, beta: bool, maximizingPlayer: bool, botTurn: bool):
         if depth == 0 or self.is_terminal(state):
-            return self.evaluate(state)
+            return self.evaluate(state, botTurn)
         
         if maximizingPlayer:
             maxValue = -np.inf
             for child in self.get_succ(GameState(state.board_status, state.row_status, state.col_status, state.player1_turn)):
-                value = self.minimax(child, depth - 1, alpha, beta, False)
+                value = self.minimax(child, depth - 1, alpha, beta, False, botTurn)
                 maxValue = max(maxValue, value)
                 alpha = max(alpha, maxValue)      
                 if (beta <= alpha):
@@ -25,7 +44,7 @@ class MinimaxBot(Bot):
         else:
             minValue = np.inf
             for child in self.get_succ(GameState(state.board_status, state.row_status, state.col_status, not state.player1_turn)):
-                value = self.minimax(child, depth - 1, alpha, beta, True)
+                value = self.minimax(child, depth - 1, alpha, beta, True, botTurn)
                 minValue = min(minValue, value)
                 beta = min(beta, value)  
                 if (beta <= alpha):
@@ -36,11 +55,11 @@ class MinimaxBot(Bot):
         # Check if the given state is terminal.
         return (state.row_status == 1).all() and (state.col_status == 1).all()
 
-    def evaluate(self, state: GameState) -> int:
+    def evaluate(self, state: GameState, botTurn) -> int:
         # Return the evaluation of the given state.
         player1_score = len(np.argwhere(state.board_status == -4))
         player2_score = len(np.argwhere(state.board_status == 4))
-        if(state.player1_turn):
+        if(botTurn):
             if(player1_score > player2_score):
                 return 1
             else:
