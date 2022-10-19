@@ -1,6 +1,7 @@
 from Bot import Bot
 from GameAction import GameAction
 from GameState import GameState
+import random
 
 import numpy as np
 
@@ -53,6 +54,7 @@ class LocalSearchBot(Bot):
                 if state.col_status[i][j] == 0:
                     successors.append(GameAction("col", (i, j)))
 
+        random.shuffle(successors)
         return successors
 
     def get_successor_state(self, state: GameState, action: GameAction) -> GameState:

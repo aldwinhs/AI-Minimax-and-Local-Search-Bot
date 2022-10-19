@@ -2,6 +2,7 @@ from Bot import Bot
 from GameAction import GameAction
 from GameState import GameState
 import numpy as np
+import random
 import time
 
 class MinimaxBot(Bot):
@@ -61,15 +62,9 @@ class MinimaxBot(Bot):
         player1_score = len(np.argwhere(state.board_status == -4))
         player2_score = len(np.argwhere(state.board_status == 4))
         if(botTurn):
-            if(player1_score > player2_score):
-                return 1
-            else:
-                return -1
+            return player1_score - player2_score
         else:
-            if(player1_score < player2_score):
-                return 1
-            else:
-                return -1
+            return player2_score - player1_score
 
     def get_successors(self, state: GameState) -> list[GameAction]:
         # Return a list of all successor states of the given state.
@@ -88,6 +83,7 @@ class MinimaxBot(Bot):
                 if state.col_status[i][j] == 0:
                     successors.append(GameAction("col", (i, j)))
 
+        random.shuffle(successors)
         return successors
 
     def get_successor_state(self, state: GameState, action: GameAction) -> GameState:
